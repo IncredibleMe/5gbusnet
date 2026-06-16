@@ -1,0 +1,55 @@
+version: "3.9"
+
+services:
+
+  # MQTT Broker (Mosquitto) — κεντρικός κόμβος επικοινωνίας
+  mqtt_broker:
+    image: eclipse-mosquitto:2
+    container_name: busnet_mqtt
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+    restart: unless-stopped
+
+  # Driver Monitor — κάμερα οδηγού, EAR + YOLO
+  driver_monitor:
+    build: ./driver_monitor
+    container_name: busnet_driver_monitor
+    depends_on:
+      - mqtt_broker
+    environment:
+      - CAMERA_INDEX=0
+      - MQTT_BROKER=mqtt_broker
+      - MQTT_PORT=1883
+      - MQTT_TOPIC=busnet/driver/alert
+    devices:
+      - /dev/video0:/dev/video0
+    restart: unless-stopped
+
+  # Vital Signs — ξεχωριστό container (mock για demo)
+  vital_signs:
+    build: ./vital_signs
+    container_name: busnet_vital_signs
+    depends_on:
+      - mqtt_broker
+    environment:
+      - MQTT_BROKER=mqtt_broker
+      - MQTT_PORT=1883
+      - MQTT_TOPIC=busnet/driver/vitals
+    restart: unless-stopped
+
+  # Core Logic — decision support, state machine
+  core:
+    build: ./core
+    container_name: busnet_core
+    depends_on:
+      - mqtt_broker
+    environment:
+      - MQTT_BROKER=mqtt_broker
+      - MQTT_PORT=1883
+      - ALERT_TOPIC=busnet/driver/alert
+      - VITALS_TOPIC=busnet/driver/vitals
+      - OUTPUT_TOPIC=busnet/driver/decision
+    restart: unless-stopped

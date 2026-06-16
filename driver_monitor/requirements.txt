@@ -1,0 +1,5 @@
+opencv-python-headless==4.9.0.80
+mediapipe==0.10.14
+ultralytics==8.2.0
+paho-mqtt==2.1.0
+numpy==1.26.4
