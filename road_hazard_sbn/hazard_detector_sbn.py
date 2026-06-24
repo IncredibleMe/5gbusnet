@@ -2,6 +2,7 @@ import time
 import collections
 
 import sbn_client
+import mqtt_publisher
 
 class HazardDetector:
     
@@ -78,6 +79,7 @@ class HazardDetector:
 
         self._print_event(event)
         sbn_client.send_alarm(event)
+        mqtt_publisher.publish_hazard(event)
         return event
 
     def _print_event(self, event):
