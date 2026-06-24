@@ -1,22 +1,3 @@
-"""
-MQTT Publisher για road hazard events.
-Δημοσιεύει κάθε ανιχνευμένο hazard στο V2X MQTT broker, στο topic "road-safety-data".
-
-Config μέσω environment variables (με fallback σε defaults από το SBN doc):
-  MQTT_BROKER_HOST  : IP του MQTT broker (default: V2X broker, 10.143.100.71)
-  MQTT_BROKER_PORT  : port του broker (default: 1883)
-  MQTT_USERNAME     : username (default: 5gbusnet)
-  MQTT_PASSWORD     : password (default: 5gbusnet2026)
-  MQTT_TOPIC        : topic στο οποίο γίνεται publish (default: road-safety-data)
-  MQTT_CLIENT_ID    : client id (default: road-hazard-publisher)
-
-Σημείωση: Το doc του SBN αναφέρει δύο brokers, έναν γενικό (79.129.11.168, χρήστης
-consumer_user, full access σε όλα τα topics) και τον V2X broker (10.143.100.71,
-χρήστης 5gbusnet) που είναι αυτός που έχει ρητά αναφερόμενο το topic
-"road-safety-data". Αυτό το module χρησιμοποιεί by default τον V2X broker, μιας
-και το topic ανήκει εκεί. Αν χρειαστεί τελικά ο άλλος broker, αλλάζει μόνο με τα
-env variables, χωρίς αλλαγή κώδικα.
-"""
 
 import os
 import json
